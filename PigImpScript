@@ -1,0 +1,71 @@
+transaction= LOAD "/user/ranjan_manas/sqoop/data1/*" USING PigStore(',') as ( id:chararray,chain:chararray,dept:chararray,category:chararray,company:chararray,
+brand:chararray,
+date1:chararray,
+productsize: float,
+productmeasure:chararray,
+purchasequantity:int,
+purchaseamount: float
+);
+DUMP transaction;
+
+---------------------------------
+
+transactions = LOAD '/user/ranjan_manas/sqoop/data1' USING PigStorage(',') as (id:chararray,chain:chararray,dept:chararray,category:chararray,company:chararray,brand:chararray,date:chararray, productsize:float, productmeasure:chararray, purchasequantity:int, purchaseamount:float);
+
+chainGroupCust = GROUP transactions BY (chain,id);
+
+chainGroupCustSpedings1 = FOREACH chainGroupCust GENERATE group, SUM(transactions.purchaseamount) as spendings;
+
+chainGroupCustSpendings2= FOREACH chainGroupCustSpedings1 generate group.chain as chain,group.id as id, spendings;
+
+chainGroupCustSpendings3= GROUP chainGroupCustSpendings2 BY chain;
+
+chainTop10Cust = FOREACH chainGroupCustSpendings3{			  
+	chainGroupCustSpedingsSort = ORDER 
+	chainGroupCustSpendings2 BY spendings DESC;
+	top10Cust1 = LIMIT chainGroupCustSpedingsSort  10;			
+	GENERATE top10Cust1;		
+}
+
+chainTop10Cust = FOREACH chainTop10Cust GENERATE FLATTEN(top10Cust1);
+
+STORE chainTop10Cust INTO 'chainTop10Cust' ;
+
+
+---------------------------
+
+transactions = LOAD '/user/ranjan_manas/sqoop/data1' USING PigStorage(',') as (id:chararray,chain:chararray,dept:chararray,category:chararray,company:chararray,brand:chararray,date:chararray, productsize:float, productmeasure:chararray, purchasequantity:int, purchaseamount:float);
+custGroup = GROUP transactions BY id;
+
+custSpending = FOREACH custGroup GENERATE group, SUM(transactions.purchaseamount) as spending ,  SUM(transactions.purchasequantity) purchaseQty;
+custSpendingSort = ORDER custSpending BY spending desc;
+top10Cust = LIMIT custSpendingSort 10;
+STORE top10Cust INTO 'Top10CustWitnMoreCol';
+
+
+
+create External table if not exists top10Cust ( id int, spending float)
+ROW format delimited fields terminated by '\t'
+LOCATION '/user/ranjan_manas/Top10Cust’;
+
+
+create External table if not exists top10CustWithQty ( id int, spending float,purchaseQty int)
+ROW format delimited fields terminated by '\t'
+LOCATION '/user/ranjan_manas/Top10CustWitnMoreCol';
+
+
+create External table if not exists top10Cust
+(id string ,
+chain string,
+dept string,
+catagory string,
+brand string,
+date1 string,
+productsize int,
+productmeasure string,
+purchasequantaty int,
+purchaseamount double)
+ROW format delimited fields terminated by ' '
+Location '/user/ranjan_manas/data/';
+
+

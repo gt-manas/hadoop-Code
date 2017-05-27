@@ -1,0 +1,41 @@
+-param inputpath='hdfs://user/manas/logAnalysisData/' -param outPath='pigout'
+
+create External table if not exists logAnalysis
+(ip string ,
+day string,
+month string,
+year string,
+resReq string,
+status int,
+dataByte string)
+ROW format delimited fields terminated by ','
+Location '/user/manas/outPath/';
+-------------------------------------
+partition 
+
+__________________________________
+
+create table if not exists logAnalysis_partition
+(ip string ,
+day string,
+resReq string,
+status int,
+dataByte string)
+PARTITIONED by (year string,month string)
+ROW format delimited fields terminated by ',';
+
+insert into logAnalysis_partition partition (year,month)
+select ip,day,resReq,status,dataByte,year,month from logAnalysis
+
+
+
+select month,ip,count(ip) as cnt ,status from loganalysis_partition  where status>= 400 group by ip, month,status sort by month,cnt desc
+
+select month,ip,count(ip) as cnt ,status, rank() over  (partition by year,month )  rank from loganalysis_partition where status>= 400 group by ip, month,status sort by month,cnt desc
+
+
+
+rank() over (partition by iq.url order by iq.cnt desc) rnk
+
+select data.ip,data.month,data.status,data.cnt,data.rank from ( select rk.ip,rk.month,rk.status,rk.cnt,rank() over (partition by month ORDER BY month, cnt desc) as rank 
+from ( select month,ip,count(ip) as cnt ,status from loganalysis_partition where status>= 400 group by ip, month,status order by month,cnt desc) rk ) data  where data.rank<6;

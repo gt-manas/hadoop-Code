@@ -1,0 +1,68 @@
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| emp_no     | int(11)       | NO   | PRI | NULL    |       |
+| birth_date | date          | NO   |     | NULL    |       |
+| first_name | varchar(14)   | NO   |     | NULL    |       |
+| last_name  | varchar(16)   | NO   |     | NULL    |       |
+| gender     | enum('M','F') | NO   |     | NULL    |       |
+| hire_date  | date          | NO   |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+
+create external table if not exists employees(
+emp_no INT,
+birth_date DATE,
+first_name STRING,
+last_name STRING,
+gender STRING,
+hire_date DATE
+)
+ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE
+    location '/user/manas/sqoop/importalltablesEmpoyee/employees';
+
+
+
+CREATE TABLE `transactions` (
+  `id` varchar(20) DEFAULT NULL,
+  `chain` varchar(20) DEFAULT NULL,
+  `dept` varchar(20) DEFAULT NULL,
+  `category` varchar(20) DEFAULT NULL,
+  `company` varchar(20) DEFAULT NULL,
+  `brand` varchar(20) DEFAULT NULL,
+  `date1` varchar(10) DEFAULT NULL,
+  `productsize` int(11) DEFAULT NULL,
+  `productmeasure` varchar(10) DEFAULT NULL,
+  `purchasequantity` int(11) DEFAULT NULL,
+  `purchaseamount` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+mysql -u myuser -p --local-infile somedatabase
+LOAD DATA LOCAL INFILE '/volume2/hadoop_training/transactions.csv' INTO TABLE transactions FIELDS TERMINATED BY ',';
+
+CREATE TABLE `transaction_SqoopJob` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `chain` varchar(20) DEFAULT NULL,
+  `dept` varchar(20) DEFAULT NULL,
+  `category` varchar(20) DEFAULT NULL,
+  `company` varchar(20) DEFAULT NULL,
+  `brand` varchar(20) DEFAULT NULL,
+  `date1` varchar(10) DEFAULT NULL,
+  `productsize` int(11) DEFAULT NULL,
+  `productmeasure` varchar(10) DEFAULT NULL,
+  `purchasequantity` int(11) DEFAULT NULL,
+  `purchaseamount` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=262223 DEFAULT CHARSET=latin1
+
+
+
+
+insert into transaction_SqoopJob (id,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount) select null,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount from transactions limit 40;
+
+
+
+
+sqoop job --create transaction_SqoopIncrement -- import --connect jdbc:mysql://localhost/employees --username root --password mypassword --table transaction_SqoopJob --check-column id --incremental append --last-value 0 --target-dir /user/manas/sqoop/transIncrement
