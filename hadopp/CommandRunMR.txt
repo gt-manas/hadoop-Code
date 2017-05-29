@@ -1,0 +1,3 @@
+hadoop jar MapReduceLogAnalysisJobI.jar io.training.mapreduce.mapReduce.logAnalysis.job1.DriverLgAnalysis /user/manas/logAnalysisData/ /user/manas/mrla
+hadoop jar MapReduceLogAnalysisJob2.jar io.training.mapreduce.mapReduce.logAnalysis.job2.DriverLogAnalysisSecondarySort /user/manas/mrla/ /user/manas/mrlaSout/
+
