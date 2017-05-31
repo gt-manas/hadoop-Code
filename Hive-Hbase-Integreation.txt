@@ -1,0 +1,68 @@
+HBase Hive Integeration :-
+------------------------------
+Jar required for Hive - HBase integreation 
+------------------------------
+
+zookeeper-*.jar          //This will be present in $HIVE_HOME/lib directory
+hive-hbase-handler-*.jar //This will be present in $HIVE_HOME/lib directory
+guava-*.jar              //This will be present in $HIVE_HOME/lib director 
+hbase-*.jar files       //This will be present in $HBASE_HOME/lib directory
+--------------------
+Available Jar :-
+--------------------
+file:///usr/local/hive/lib/zookeeper-3.4.6.jar,file:///usr/local/hive/lib/hive-hbase-handler-2.1.1.jar,file:///usr/local/hive/lib/guava-14.0.1.jar,file:///usr/local/hive,file:///lib/hbase-annotations-1.1.1.jar,file:///usr/local/hive/lib/hbase-client-1.1.1.jar,file:///usr/local/hive/lib/hbase-common-1.1.1.jar,file:///usr/local/hive/lib/hbase-hadoop2-compat-1.1.1.jar,file:///usr/local/hive/lib/hbase-hadoop-compat-1.1.1.jar,file:///usr/local/hive/lib/hbase-prefix-tree-1.1.1.jar,file:///usr/local/hive/lib/hbase-procedure-1.1.1.jar,file:///usr/local/hive/lib/hbase-protocol-1.1.1.jar,file:///usr/local/hive/lib/hbase-server-1.1.1.jar,file:///usr/local/hbase/lib/hbase-client-1.2.5.jar,file:///usr/local/hbase/lib/hbase-common-1.2.5.jar,file:///usr/local/hbase/lib/hbase-hadoop2-compat-1.2.5.jar,file:///usr/local/hbase/lib/hbase-it-1.2.5.jar,file:///usr/local/hbase/lib/hbase-prefix-tree-1.2.5.jar,file:///usr/local/hbase/lib/hbase-protocol-1.2.5.jar,file:///usr/local/hbase/lib/hbase-server-1.2.5.jar,file:///usr/local/hbase/lib/hbase-shell-1.2.5.jar,file:///usr/local/hbase/lib/hbase-thrift-1.2.5.jar
+
+------------------
+add the below hive-site.xml
+------------------
+
+  <property>
+	<name>hive.aux.jars.path</name>
+	<value>file:///usr/local/hive/lib/zookeeper-3.4.6.jar,file:///usr/local/hive/lib/hive-hbase-handler-2.1.1.jar,file:///usr/local/hive/lib/guava-14.0.1.jar,file:///usr/local/hive,file:///lib/hbase-annotations-1.1.1.jar,file:///usr/local/hive/lib/hbase-client-1.1.1.jar,file:///usr/local/hive/lib/hbase-common-1.1.1.jar,file:///usr/local/hive/lib/hbase-hadoop2-compat-1.1.1.jar,file:///usr/local/hive/lib/hbase-hadoop-compat-1.1.1.jar,file:///usr/local/hive/lib/hbase-prefix-tree-1.1.1.jar,file:///usr/local/hive/lib/hbase-procedure-1.1.1.jar,file:///usr/local/hive/lib/hbase-protocol-1.1.1.jar,file:///usr/local/hive/lib/hbase-server-1.1.1.jar,file:///usr/local/hbase/lib/hbase-client-1.2.5.jar,file:///usr/local/hbase/lib/hbase-common-1.2.5.jar,file:///usr/local/hbase/lib/hbase-hadoop2-compat-1.2.5.jar,file:///usr/local/hbase/lib/hbase-it-1.2.5.jar,file:///usr/local/hbase/lib/hbase-prefix-tree-1.2.5.jar,file:///usr/local/hbase/lib/hbase-protocol-1.2.5.jar,file:///usr/local/hbase/lib/hbase-server-1.2.5.jar,file:///usr/local/hbase/lib/hbase-shell-1.2.5.jar,file:///usr/local/hbase/lib/hbase-thrift-1.2.5.jar
+	</value>
+  </property>
+
+Verify :- 
+
+Hive to Hbase
+
+CREATE TABLE hbase_table_emp(id int, name string, role string) 
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf1:name,cf1:role")
+TBLPROPERTIES ("hbase.table.name" = "emp");
+
+
+Hbase To hive 
+Hbase Table :-
+
+create 'user', 'cf1', 'cf2'
+put 'user', 'row1', 'cf1:a', 'value1'
+put 'user', 'row1', 'cf1:b', 'value2'
+put 'user', 'row1', 'cf2:c', 'value3'
+put 'user', 'row2', 'cf2:c', 'value4'
+put 'user', 'row2', 'cf1:b', 'value5'
+put 'user', 'row3', 'cf1:a', 'value6'
+put 'user', 'row3', 'cf2:c', 'value7'
+describe 'user'
+hbase(main):011:0> scan 'user'
+
+-----------------
+$ hive
+hive> CREATE EXTERNAL TABLE hbase_table_user(key string, val1 string, val2 string, val3 string)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = "cf1:a,cf1:b,cf2:c")
+TBLPROPERTIES("hbase.table.name" = "user");
+
+----------------
+
+
+
+
+
+
+
+
+
+
+
+
