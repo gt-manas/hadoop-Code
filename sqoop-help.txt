@@ -36,7 +36,7 @@ for Sequence file --as-sequencefile
 --username root --password mypassword 
 --warehouse-dir /user/manas/sqoop/importalltablesEmpoyee/ -m10
 
-7. Get data from csv file to mysql datbase and load it.
+7. Get data from csv file to mysql database and load it.
 LOAD DATA LOCAL INFILE '/home/ranjan_manas/data/transactions.csv'
 INTO TABLE transactions FIELDS TERMINATED BY ',' ;
 
