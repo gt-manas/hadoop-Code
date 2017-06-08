@@ -69,19 +69,19 @@ insert into transaction_SqoopJob (id,chain,dept,category,company,brand,date1,pro
 --password mypassword --table transaction_SqoopJob --check-column id --incremental append --last-value 0 
 --target-dir /user/manas/sqoop/transIncrement
 
-10 . sqoop import --connect jdbc:mysql://52.34.11.96/ranjan_manas --username ranjan_manas --password sWAIMnB7X4rXi06 --table transaction2 --target-dir testIncrement
+10 . sqoop import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_manas --password XXXXX --table transaction2 --target-dir testIncrement
 
-11 . sqoop import --connect jdbc:mysql://52.34.11.96/ranjan_manas --username ranjan_manas --password sWAIMnB7X4rXi06 --table transaction2 --check-column id --incremental append --last-value 262160 --target-dir testIncrement
-12. sqoop job --create myfj -- import --connect jdbc:mysql://52.34.11.96/ranjan_manas --username ranjan_manas --password sWAIMnB7X4rXi06 --table transaction2 --target-dir testIncrement2
+11 . sqoop import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_manas --password XXXX --table transaction2 --check-column id --incremental append --last-value 262160 --target-dir testIncrement
+12. sqoop job --create myfj -- import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_manas --password XXXXXX --table transaction2 --target-dir testIncrement2
 
-13. sqoop job --create myfj2 -- import --connect jdbc:mysql://52.34.11.96/ranjan_manas --username ranjan_manas --password sWAIMnB7X4rXi06 --table transaction2 --check-column id --incremental append --last-value 0 --target-dir testIncrement2
+13. sqoop job --create myfj2 -- import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_manas --password XXXXX --table transaction2 --check-column id --incremental append --last-value 0 --target-dir testIncrement2
 
 
-HIVE 
+14. HIVE 
 
-sqoop import --connect jdbc:mysql://52.34.11.96/ranjan_manas --username ranjan_manas --password sWAIMnB7X4rXi06 --table transactions --split-by id --hive-import
+sqoop import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_manas --password XXXX --table transactions --split-by id --hive-import
 
 sqoop import --connect jdbc:mysql://localhost/sqoop --username sqoop --password sqoop --table cities --warehouse-dir mywarehouse 
 
 
-10.
+15.
