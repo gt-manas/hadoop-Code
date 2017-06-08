@@ -40,9 +40,7 @@ for Sequence file --as-sequencefile
 LOAD DATA LOCAL INFILE '/home/ranjan_manas/data/transactions.csv'
 INTO TABLE transactions FIELDS TERMINATED BY ',' ;
 
-8.sqoop import --connect jdbc:mysql://localhost/employees 
---username root --password mypassword --query 'select * from transaction_SqoopJob WHERE $CONDITIONS' 
---split-by id --target-dir /user/manas/sqoop/importThroughQuery 
+
 
 [Note :
 create table :-
@@ -60,10 +58,31 @@ CREATE TABLE `transactions_export` (
   `purchasequantity` int(11) DEFAULT NULL,
   `purchaseamount` float DEFAULT NULL
 )
+ *************************
+ create 
+ *************************
  
-insert into transaction_SqoopJob (id,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount)
- select null,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount from transactions limit 2000;]
+ CREATE TABLE `transactions_inc` (
+  `id`  INT NOT NULL AUTO_INCREMENT,
+  `chain` varchar(20) DEFAULT NULL,
+  `dept` varchar(20) DEFAULT NULL,
+  `category` varchar(20) DEFAULT NULL,
+  `company` varchar(20) DEFAULT NULL,
+  `brand` varchar(20) DEFAULT NULL,
+  `date1` varchar(10) DEFAULT NULL,
+  `productsize` int(11) DEFAULT NULL,
+  `productmeasure` varchar(10) DEFAULT NULL,
+  `purchasequantity` int(11) DEFAULT NULL,
+  `purchaseamount` float DEFAULT NULL,
+   PRIMARY KEY (id)
+)
 
+insert into transactions_inc (id,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount)
+ select null,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount from transactions limit 2000;
+ 
+8. sqoop import --connect jdbc:mysql://localhost/employees 
+--username root --password mypassword --query 'select * from transaction_SqoopJob WHERE $CONDITIONS' 
+--split-by id --target-dir /user/manas/sqoop/importThroughQuery 
 
 9. sqoop job --create transaction_SqoopIncrement -- import --connect jdbc:mysql://localhost/employees --username root 
 --password mypassword --table transaction_SqoopJob --check-column id --incremental append --last-value 0 
@@ -84,4 +103,6 @@ sqoop import --connect jdbc:mysql://localhost/ranjan_manas --username ranjan_man
 sqoop import --connect jdbc:mysql://localhost/sqoop --username sqoop --password sqoop --table cities --warehouse-dir mywarehouse 
 
 
-15.
+Export Commands:-
+
+15. 
