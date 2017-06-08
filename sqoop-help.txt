@@ -108,4 +108,4 @@ sqoop import --connect jdbc:mysql://localhost/sqoop --username sqoop --password 
 
 Export Commands:-
 
-15. 
+15. sqoop export --connect jdbc:mysql://localhost/sqoop --username root -password 123@wipro --table transactions_exp --export-dir /user/manhati/sqoopData/importThroughQuery
