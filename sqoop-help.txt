@@ -80,9 +80,12 @@ CREATE TABLE `transactions_export` (
 insert into transactions_inc (id,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount)
  select null,chain,dept,category,company,brand,date1,productsize,productmeasure,purchasequantity,purchaseamount from transactions limit 2000;
  
-8. sqoop import --connect jdbc:mysql://localhost/employees 
+8. --- With where condition ------
+	i. sqoop import --connect jdbc:mysql://localhost/employees 
 --username root --password mypassword --query 'select * from transaction_SqoopJob WHERE $CONDITIONS' 
 --split-by id --target-dir /user/manas/sqoop/importThroughQuery 
+	ii. sqoop import --connect jdbc:mysql://localhost/sqoop --username root --password XXXXXX --query 'select * from transactions WHERE id < 5000 and $CONDITIONS' --split-by id --target-dir /user/manhati/sqoopData/importThroughQuery 
+
 
 9. sqoop job --create transaction_SqoopIncrement -- import --connect jdbc:mysql://localhost/employees --username root 
 --password mypassword --table transaction_SqoopJob --check-column id --incremental append --last-value 0 
